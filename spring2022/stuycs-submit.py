@@ -250,23 +250,36 @@ while True:
     comment = input('Comments: ')
 
     while True: 
-      file = assignment + "." + input("extension: ") # input('File Name/Path: ')
+      extension = input("extension: ")
+      file = assignment + "." + extension # input('File Name/Path: ')
 
-      if exists(file) == False:
+      if extension == "null":
+        break
+      elif exists(file) == False:
         print('invalid file path / file not found')
       else:
         break
     break
 
 # submit
-response = requests.post(url, 
+if extension == "null":
+  response = requests.post(url, 
   data = {
     'page': 'store_homework',
     'classid': period,
     'id4': id4,
     'assignmentid': assignment,
     'teacher_comment': comment,
-  }, files={'filecontents': open(file, 'rb')})
+  }, files={'filecontents': "(binary)"})
+else: 
+  response = requests.post(url, 
+    data = {
+      'page': 'store_homework',
+      'classid': period,
+      'id4': id4,
+      'assignmentid': assignment,
+      'teacher_comment': comment,
+    }, files={'filecontents': open(file, 'rb')})
 
 if 'Stored homework.' in response.text:
   print('\n**Successfully stored.**\n\nYou may now verify your submission at https://bert.stuy.edu/{}/{}/pages.py/'.format(teacherName, term))
